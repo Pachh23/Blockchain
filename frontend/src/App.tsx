@@ -39,25 +39,11 @@ import { Layout, message } from "antd";
 import axios from "axios";
 import AppointmentForm from "./components/AppointmentForm";
 import AppointmentTable from "./components/AppointmentTable";
-import { Appointment } from "./types/Appointment";
 
 const { Header, Content, Footer } = Layout;
 
 const App: React.FC = () => {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
 
-  const fetchAppointments = async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/blocks");
-      setAppointments(response.data);
-    } catch (error) {
-      message.error("Failed to fetch appointments");
-    }
-  };
-
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
 
   return (
     <Layout>
@@ -65,8 +51,8 @@ const App: React.FC = () => {
         Patient Appointment System
       </Header>
       <Content style={{ padding: "20px" }}>
-        <AppointmentForm onAppointmentAdded={fetchAppointments} />
-        <AppointmentTable appointments={appointments} />
+        <AppointmentForm  />
+        <AppointmentTable />
       </Content>
       <Footer style={{ textAlign: "center" }}>©2024 Patient Appointment Blockchain</Footer>
     </Layout>
