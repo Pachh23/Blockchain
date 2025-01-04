@@ -27,9 +27,10 @@ func ConnectionDB() {
 func SetupDatabase() {
 	db.AutoMigrate(
 		&entity.Patient{},
-		&entity.Appointment{},
 		&entity.Departments{},
 		&entity.Room{}, // เพิ่มการ migrate ตาราง Like
+		&entity.Times{},
+		&entity.Appointment{},
 	)
 
 	// ผู้ป่วย
@@ -58,14 +59,14 @@ func SetupDatabase() {
 	appointments := []entity.Appointment{
 		{
 			Date:         time.Now(),
-			Time:         time.Now(),
+			TimeID:       1,
 			Illness:      "ปวดหัว",
 			DepartmentID: 1,
 			PatientID:    1,
 		},
 		{
 			Date:         time.Now(),
-			Time:         time.Now(),
+			TimeID:       1,
 			Illness:      "ปวดตัว",
 			DepartmentID: 2,
 			PatientID:    2,
@@ -217,6 +218,31 @@ func SetupDatabase() {
 	// เพิ่มห้องในฐานข้อมูล
 	for _, room := range rooms {
 		db.FirstOrCreate(&room, entity.Room{DepartmentID: room.DepartmentID, Name: room.Name})
+	}
+	// แผนก
+	times := []entity.Times{
+		{
+			Time: "10.00 - 11.00",
+		},
+		{
+			Time: "11.00 - 12.00",
+		},
+		{
+			Time: "12.00 - 13.00",
+		},
+		{
+			Time: "13.00 - 14.00",
+		},
+		{
+			Time: "14.00 - 15.00",
+		},
+		{
+			Time: "15.00 - 16.00",
+		},
+	}
+
+	for _, time := range times {
+		db.FirstOrCreate(&time, entity.Times{Time: time.Time})
 	}
 
 }

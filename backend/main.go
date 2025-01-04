@@ -28,6 +28,7 @@ func main() {
 	}
 	r.GET("/departments", controller.GetAllDepartments)
 	r.GET("/rooms", controller.GetAllRooms)
+	r.GET("/times", controller.GetAllTimes)
 
 	r.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "API RUNNING... PORT: %s", PORT)

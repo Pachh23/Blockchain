@@ -29,9 +29,17 @@ async function GetRoom() {
     .then((res) => res)
     .catch((e) => e.response);
 }
+
+async function GetTime() {
+  return await axios
+    .get(`${apiUrl}/times`,requestOptions)
+    .then((res) => res)
+    .catch((e) => e.response);
+}
 export {
   SignIn,
   GetDepartment,
   GetRoom,
+  GetTime,
   
 };

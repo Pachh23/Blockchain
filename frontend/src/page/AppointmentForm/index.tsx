@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Form, Select, DatePicker, TimePicker, Input, Button, Card, Row, Col, Table, message } from 'antd';
 import moment from 'moment';
 import { RoomInterface } from '../../interface/IRoom';
+import { TimeInterface } from '../../interface/ITime';
 import { DepartmentInterface } from '../../interface/IDepartment';
-import { GetDepartment, GetRoom } from '../../services/https';
+import { GetDepartment, GetRoom, GetTime } from '../../services/https';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -14,6 +15,7 @@ const AppointmentForm1: React.FC = () => {
   const [selectedDept, setSelectedDept] = useState(null);
   const [rooms, setRooms] = useState<RoomInterface[]>([]);
   const [departments, setDepartments] = useState<DepartmentInterface[]>([]);
+  const [times, setTimes] = useState<TimeInterface[]>([]);
 
   
   const getDepartments = async () => {
@@ -36,9 +38,21 @@ const AppointmentForm1: React.FC = () => {
     };
 
 
+    // Fetch Initial Data
+    const getTimes = async () => {
+      let res = await GetTime();
+      if (res.status === 200) {
+        setTimes(res.data);
+      } else {
+        messageApi.error("Times not found");
+      }
+    };
+
+
     useEffect(() => {
       getDepartments();
       getRooms();
+      getTimes();
     }, []);
 
     useEffect(() => {
@@ -53,7 +67,8 @@ const AppointmentForm1: React.FC = () => {
     };
   // กำหนดวันไม่ให้เลือกวันในอดีต
   const disabledDate = (current: moment.Moment) => {
-    return current && current < moment().startOf('day');
+    // ป้องกันไม่ให้เลือกวันที่ในอดีต
+    return current && current < moment().endOf('day');
   };
 
   // ข้อมูลสำหรับตาราง
@@ -151,24 +166,29 @@ const AppointmentForm1: React.FC = () => {
                     <DatePicker 
                       style={{ width: '100%' }}
                       format="DD/MM/YYYY"
-                      //disabled={disabledDate}
+                      disabledDate={disabledDate} // กำหนด disabledDate
                     />
                   </Form.Item>
                 </Col>
 
                 <Col xs={24} sm={12}>
-                  <Form.Item
-                    name="time"
-                    label="Time"
-                    rules={[{ required: true, message: 'Please select a time' }]}
-                  >
-                    <TimePicker 
-                      style={{ width: '100%' }}
-                      format="HH:mm"
-                      minuteStep={15}
-                      showNow={false}
-                    />
-                  </Form.Item>
+                <Form.Item
+            name="TimeID"
+            label="time"
+            rules={[{ required: true, message: 'Please select a time' }]}
+          >
+            <Select
+              placeholder="Select time"
+              onChange={handleDepartmentChange}
+              loading={departments.length === 0}
+            >
+              {times.map((item) => (
+                <Select.Option value={item.ID} key={item.ID}>
+                  {item.time}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
                 </Col>
               </Row>
 
