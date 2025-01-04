@@ -12,12 +12,15 @@ type Appointment struct {
 	Date    time.Time `json:"date"`
 	Illness string    `json:"illness"`
 
-	TimeID uint
-	Time   Times `json:"time" gorm:"foreignKey:TimeID"`
-
 	DepartmentID uint
 	Department   Departments `json:"department" gorm:"foreignKey:DepartmentID"`
 
-	PatientID uint
+	TimeID uint
+	Time   Times `json:"time" gorm:"foreignKey:TimeID"`
+
+	PatientID *uint
 	Patient   Patient `json:"patient" gorm:"foreignKey:PatientID"`
+
+	RoomID uint
+	Room   Room `json:"room" gorm:"foreignKey:RoomID"`
 }

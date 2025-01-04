@@ -44,11 +44,19 @@ async function CreateAppointment(data: AppointmentInterface) {
     .then((res) => res)
     .catch((e) => e.response);
 }
+
+async function GetAppointment() {
+  return await axios
+    .get(`${apiUrl}/appointments`,requestOptions)
+    .then((res) => res)
+    .catch((e) => e.response);
+}
 export {
   SignIn,
   GetDepartment,
   GetRoom,
   GetTime,
-  CreateAppointment
+  CreateAppointment,
+  GetAppointment
   
 };

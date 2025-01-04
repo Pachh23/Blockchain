@@ -62,14 +62,14 @@ func SetupDatabase() {
 			TimeID:       1,
 			Illness:      "ปวดหัว",
 			DepartmentID: 1,
-			//PatientID:    1,
+			RoomID:       1,
 		},
 		{
 			Date:         time.Now(),
 			TimeID:       1,
 			Illness:      "ปวดตัว",
 			DepartmentID: 2,
-			//PatientID:    2,
+			RoomID:       1,
 		},
 	}
 
@@ -124,100 +124,100 @@ func SetupDatabase() {
 	rooms := []entity.Room{
 		// แผนกกุมารเวชกรรม
 		{
-			Name:         "ห้องตรวจสำหรับเด็ก 1",
+			Room:         "ห้องตรวจสำหรับเด็ก 1",
 			DepartmentID: 1,
 		},
 		{
-			Name:         "ห้องตรวจสำหรับเด็ก 2",
+			Room:         "ห้องตรวจสำหรับเด็ก 2",
 			DepartmentID: 1,
 		},
 		{
-			Name:         "ห้องตรวจสำหรับเด็ก 3",
+			Room:         "ห้องตรวจสำหรับเด็ก 3",
 			DepartmentID: 1,
 		},
 		// แผนกทันตกรรม
 		{
-			Name:         "ห้องตรวจฟัน 1",
+			Room:         "ห้องตรวจฟัน 1",
 			DepartmentID: 2,
 		},
 		{
-			Name:         "ห้องตรวจฟัน 2",
+			Room:         "ห้องตรวจฟัน 2",
 			DepartmentID: 2,
 		},
 		{
-			Name:         "ห้องตรวจฟัน 3",
+			Room:         "ห้องตรวจฟัน 3",
 			DepartmentID: 2,
 		},
 		// แผนกศัลยกรรม
 		{
-			Name:         "ห้องตรวจศัลยกรรม 1",
+			Room:         "ห้องตรวจศัลยกรรม 1",
 			DepartmentID: 3,
 		},
 		{
-			Name:         "ห้องตรวจศัลยกรรม 2",
+			Room:         "ห้องตรวจศัลยกรรม 2",
 			DepartmentID: 3,
 		},
 		{
-			Name:         "ห้องตรวจศัลยกรรม 3",
+			Room:         "ห้องตรวจศัลยกรรม 3",
 			DepartmentID: 3,
 		},
 		// แผนกศัลยกรรมและกระดูก
 		{
-			Name:         "ห้องตรวจกระดูก 1",
+			Room:         "ห้องตรวจกระดูก 1",
 			DepartmentID: 4,
 		},
 		{
-			Name:         "ห้องตรวจกระดูก 2",
+			Room:         "ห้องตรวจกระดูก 2",
 			DepartmentID: 4,
 		},
 		{
-			Name:         "ห้องตรวจกระดูก 3",
+			Room:         "ห้องตรวจกระดูก 3",
 			DepartmentID: 4,
 		},
 		// แผนกหู คอ จมูก
 		{
-			Name:         "ห้องตรวจหู คอ จมูก 1",
+			Room:         "ห้องตรวจหู คอ จมูก 1",
 			DepartmentID: 5,
 		},
 		{
-			Name:         "ห้องตรวจหู คอ จมูก 2",
+			Room:         "ห้องตรวจหู คอ จมูก 2",
 			DepartmentID: 5,
 		},
 		{
-			Name:         "ห้องตรวจหู คอ จมูก 3",
+			Room:         "ห้องตรวจหู คอ จมูก 3",
 			DepartmentID: 5,
 		},
 		// แผนกอายุรกรรม
 		{
-			Name:         "ห้องตรวจอายุรกรรม 1",
+			Room:         "ห้องตรวจอายุรกรรม 1",
 			DepartmentID: 6,
 		},
 		{
-			Name:         "ห้องตรวจอายุรกรรม 2",
+			Room:         "ห้องตรวจอายุรกรรม 2",
 			DepartmentID: 6,
 		},
 		{
-			Name:         "ห้องตรวจอายุรกรรม 3",
+			Room:         "ห้องตรวจอายุรกรรม 3",
 			DepartmentID: 6,
 		},
 		// แผนกผิวหนัง
 		{
-			Name:         "ห้องตรวจผิวหนัง 1",
+			Room:         "ห้องตรวจผิวหนัง 1",
 			DepartmentID: 7,
 		},
 		{
-			Name:         "ห้องตรวจผิวหนัง 2",
+			Room:         "ห้องตรวจผิวหนัง 2",
 			DepartmentID: 7,
 		},
 		{
-			Name:         "ห้องตรวจผิวหนัง 3",
+			Room:         "ห้องตรวจผิวหนัง 3",
 			DepartmentID: 7,
 		},
 	}
 
 	// เพิ่มห้องในฐานข้อมูล
 	for _, room := range rooms {
-		db.FirstOrCreate(&room, entity.Room{DepartmentID: room.DepartmentID, Name: room.Name})
+		db.FirstOrCreate(&room, entity.Room{DepartmentID: room.DepartmentID, Room: room.Room})
 	}
 	// แผนก
 	times := []entity.Times{

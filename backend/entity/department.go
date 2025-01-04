@@ -7,4 +7,5 @@ type Departments struct {
 	Department  string `json:"department"`
 	Description string `json:"description"`
 	HeadOfDept  string `json:"head_of_department"`
+	Rooms       []Room `gorm:"foreignKey:DepartmentID" json:"rooms"` // เชื่อมโยงกับ Rooms
 }

@@ -4,8 +4,9 @@ import { RoomInterface } from '../../interface/IRoom';
 import { TimeInterface } from '../../interface/ITime';
 import { AppointmentInterface } from '../../interface/IAppointment';
 import { DepartmentInterface } from '../../interface/IDepartment';
-import { CreateAppointment, GetDepartment, GetRoom, GetTime } from '../../services/https';
+import { CreateAppointment, GetAppointment, GetDepartment, GetRoom, GetTime } from '../../services/https';
 import dayjs from 'dayjs'; // ใช้ dayjs แทน moment
+import { ColumnsType } from 'antd/es/table';
 const { TextArea } = Input;
 
 const AppointmentForm1: React.FC = () => {
@@ -15,6 +16,8 @@ const AppointmentForm1: React.FC = () => {
   const [rooms, setRooms] = useState<RoomInterface[]>([]);
   const [departments, setDepartments] = useState<DepartmentInterface[]>([]);
   const [times, setTimes] = useState<TimeInterface[]>([]);
+  const [data, setDatas] = useState<AppointmentInterface[]>([]);
+
 
   
   const getDepartments = async () => {
@@ -48,10 +51,25 @@ const AppointmentForm1: React.FC = () => {
     };
 
 
+    const getDatas = async () => {
+      let res = await GetAppointment();
+     
+      if (res.status == 200) {
+        setDatas(res.data);
+      } else {
+        setDatas([]);
+        messageApi.open({
+          type: "error",
+          content: res.data.error,
+        });
+      }
+    };
+
     useEffect(() => {
       getDepartments();
       getRooms();
       getTimes();
+      getDatas();
     }, []);
 
     useEffect(() => {
@@ -69,6 +87,7 @@ const AppointmentForm1: React.FC = () => {
     // ป้องกันไม่ให้เลือกวันที่ในอดีต
     return date && date.isBefore(dayjs(), 'day'); // ใช้ isBefore แทน
   };
+  console.log(data);
 
   const onFinish = async (values: AppointmentInterface) => {
     let res = await CreateAppointment(values);
@@ -88,33 +107,40 @@ const AppointmentForm1: React.FC = () => {
       });
     }
   };
-
+  
   // ข้อมูลสำหรับตาราง
-  const columns = [
+  const columns : ColumnsType<AppointmentInterface> = [
     {
-      title: "Patient ID",
-      dataIndex: "patient_id",
-      key: "patient_id",
+      title: 'ID',
+      dataIndex: 'ID',
+      key: 'id',
     },
     {
-      title: "Doctor ID",
-      dataIndex: "doctor_id",
-      key: "doctor_id",
+      title: "DepartmentID",
+      key: "DepartmentID",
+      render: (record) => <>{record?.department?.department}</>,
     },
+    {
+      title: "RoomID",
+      key: "RoomID",
+      render: (record) => <>{record?.room?.room}</>,
+    }
+      
+,    
     {
       title: "Date",
-      dataIndex: "date",
       key: "date",
+      render: (record) => <>{dayjs(record.date).format("DD/MM/YYYY")}</>,
     },
     {
-      title: "Time",
-      dataIndex: "time",
-      key: "time",
+      title: "TimeID",
+      key: "TimeID",
+      render: (record) => <>{record?.time?.time}</>,
     },
     {
       title: "Reason",
-      dataIndex: "reason",
-      key: "reason",
+      dataIndex: "illness",
+      key: "illness",
     },
   ];
 
@@ -166,7 +192,7 @@ const AppointmentForm1: React.FC = () => {
                 .filter((room) => room.department_id === selectedDept)
                 .map((room) => (
                   <Select.Option key={room.ID} value={room.ID}>
-                    {room.name}
+                    {room.room}
                   </Select.Option>
                 ))}
             </Select>
@@ -234,8 +260,8 @@ const AppointmentForm1: React.FC = () => {
             <Card title="Appointment Table" bordered={true}>
               <Table
                 columns={columns}
-                //dataSource={data}
-                rowKey="patient_id"
+                dataSource={data}
+                rowKey="ID"
               />
             </Card>
           </Col>

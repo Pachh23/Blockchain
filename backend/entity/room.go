@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 type Room struct {
 	gorm.Model
-	Name         string `json:"name"`
+	Room         string `json:"room"`
 	DepartmentID uint   `json:"department_id"` // Foreign Key สำหรับเชื่อมโยงกับแผนก
 
 	// การเชื่อมโยงไปยัง Department

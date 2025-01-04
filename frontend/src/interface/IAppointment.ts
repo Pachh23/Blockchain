@@ -1,3 +1,4 @@
+
 export interface AppointmentInterface {
     ID?: number;
     Date?: string;
@@ -5,4 +6,5 @@ export interface AppointmentInterface {
     Illness?: string;
     DepartmentID?: number;
     PatientID?: number;
+    RoomID?: number;
 }

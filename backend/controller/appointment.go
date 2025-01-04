@@ -32,25 +32,38 @@ func CreateAppointment(c *gin.Context) {
 	})
 }
 
+/*
 // GetAllAppointments - GET /appointments
+
+	func GetAllAppointments(c *gin.Context) {
+		var appointments []entity.Appointment
+		db := config.DB()
+		// Fetch all appointments and preload the associated patient and department data
+		results := db.Preload("Department").Preload("Time").Preload("Department.Name").Find(&appointments)
+		if results.Error != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, appointments)
+	}
+*/
 func GetAllAppointments(c *gin.Context) {
 	var appointments []entity.Appointment
-
 	db := config.DB()
 
-	// Fetch all appointments and preload the associated patient and department data
-	results := db.Preload("Patient").Preload("Department").Find(&appointments)
+	// Preload Department และ Rooms
+	results := db.
+		Preload("Department"). // โหลด Rooms ที่เกี่ยวข้องกับ Department
+		Preload("Time").
+		Preload("Room"). // โหลด Time
+		Find(&appointments)
 
-	if results.Error != nil || results.RowsAffected == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "No appointments found"})
+	if results.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
 		return
 	}
 
-	// Return all appointments with preloaded patient and department data
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Appointments fetched successfully",
-		"data":    appointments,
-	})
+	c.JSON(http.StatusOK, appointments)
 }
 
 // GetAppointmentByID - GET /appointments/:id
