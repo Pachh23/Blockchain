@@ -5,6 +5,7 @@ import { RoomInterface } from '../../interface/IRoom';
 import { TimeInterface } from '../../interface/ITime';
 import { DepartmentInterface } from '../../interface/IDepartment';
 import { GetDepartment, GetRoom, GetTime } from '../../services/https';
+import dayjs from 'dayjs'; // ใช้ dayjs แทน moment
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -66,9 +67,9 @@ const AppointmentForm1: React.FC = () => {
       form.setFieldValue('RoomID', undefined);
     };
   // กำหนดวันไม่ให้เลือกวันในอดีต
-  const disabledDate = (current: moment.Moment) => {
+  const disabledDate = (date: dayjs.Dayjs) => {
     // ป้องกันไม่ให้เลือกวันที่ในอดีต
-    return current && current < moment().endOf('day');
+    return date && date.isBefore(dayjs(), 'day'); // ใช้ isBefore แทน
   };
 
   // ข้อมูลสำหรับตาราง
