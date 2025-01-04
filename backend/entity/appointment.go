@@ -18,6 +18,6 @@ type Appointment struct {
 	DepartmentID uint
 	Department   Departments `json:"department" gorm:"foreignKey:DepartmentID"`
 
-	PatientID *uint
+	PatientID uint
 	Patient   Patient `json:"patient" gorm:"foreignKey:PatientID"`
 }
