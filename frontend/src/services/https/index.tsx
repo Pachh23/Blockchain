@@ -51,12 +51,21 @@ async function GetAppointment() {
     .then((res) => res)
     .catch((e) => e.response);
 }
+
+async function GetAllBlock() {
+  return await axios
+    .get(`${apiUrl}/blocks`,requestOptions)
+    .then((res) => res)
+    .catch((e) => e.response);
+}
+
 export {
   SignIn,
   GetDepartment,
   GetRoom,
   GetTime,
   CreateAppointment,
-  GetAppointment
+  GetAppointment,
+  GetAllBlock
   
 };

@@ -39,12 +39,15 @@ export default App
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './page/login'; // import LoginPage component
 import AppointmentForm1 from './page/AppointmentForm';
+import BlockchainDataPage from './page/BlockchainDataPage';
 const App: React.FC = () => {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/appointmentForm1" element={<AppointmentForm1 />} />
+        <Route path="/BlockchainDataPage" element={<BlockchainDataPage />} />
+
       </Routes>
     </Router>
   );

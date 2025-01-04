@@ -1,14 +1,17 @@
 package controller
 
 import (
+	"encoding/json"
 	"net/http"
 
+	"blockchain.com/bc-67/blockchain" // เพิ่มการ import package blockchain
 	"blockchain.com/bc-67/config"
 	"blockchain.com/bc-67/entity"
 	"github.com/gin-gonic/gin"
 )
 
-// CreateAppointment - POST /appointments
+var blockchainInstance = blockchain.NewBlockchain() // สร้าง instance ของ Blockchain
+
 func CreateAppointment(c *gin.Context) {
 	var appointment entity.Appointment
 
@@ -26,12 +29,63 @@ func CreateAppointment(c *gin.Context) {
 		return
 	}
 
+	// Convert the appointment object to JSON for storing in the blockchain
+	appointmentData, _ := json.Marshal(appointment)
+
+	// Create a new block using the appointment data
+	newBlock := blockchainInstance.CreateBlock(string(appointmentData)) // เพิ่มบล็อกใหม่เข้าไปใน Blockchain
+
+	// ส่งข้อมูลตอบกลับรวมทั้งข้อมูล appointment และ block
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Appointment created successfully",
 		"data":    appointment,
+		"block":   newBlock, // ส่งข้อมูล block ที่ถูกสร้าง
 	})
 }
 
+
+	func GetAllBlocks(c *gin.Context) {
+		c.JSON(http.StatusOK, blockchainInstance.Chain)
+	}
+/*
+func GetAllBlocks(c *gin.Context) {
+	// ดึงข้อมูลจาก Blockchain
+	blocks := blockchainInstance.Chain
+
+	// ดึงข้อมูล Appointment จากฐานข้อมูล
+	var appointments []entity.Appointment
+	db := config.DB()
+	results := db.
+		Preload("Department").
+		Preload("Time").
+		Preload("Room").
+		Find(&appointments)
+
+	if results.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
+		return
+	}
+
+	// สร้างผลลัพธ์ที่รวมข้อมูลจาก Blockchain และ Appointment
+	var combinedResult []map[string]interface{}
+	for _, block := range blocks {
+		// ตรวจสอบว่า Block Data เกี่ยวข้องกับ Appointment หรือไม่
+		for _, appointment := range appointments {
+			// คุณสามารถกำหนดเงื่อนไขการจับคู่ได้ที่นี่ (เช่น การตรวจสอบ `block.Data` กับ `appointment.ID`)
+			if block.Data == string(appointment.ID) { // สมมุติว่า block.Data เก็บข้อมูลที่เกี่ยวข้องกับ Appointment.ID
+				// ผสมข้อมูลจาก Blockchain กับ Appointment
+				combinedResult = append(combinedResult, map[string]interface{}{
+					"block":       block,
+					"appointment": appointment,
+				})
+			}
+		}
+	}
+
+	// ส่งผลลัพธ์ทั้งหมดกลับไปยังผู้ใช้งาน
+	c.JSON(http.StatusOK, combinedResult)
+}
+*/
 /*
 // GetAllAppointments - GET /appointments
 

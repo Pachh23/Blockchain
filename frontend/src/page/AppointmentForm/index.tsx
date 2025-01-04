@@ -18,8 +18,6 @@ function AppointmentForm1() {
   const [times, setTimes] = useState<TimeInterface[]>([]);
   const [data, setDatas] = useState<AppointmentInterface[]>([]);
 
-
-
   const getDepartments = async () => {
     let res = await GetDepartment();
     if (res.status === 200) {
@@ -39,7 +37,6 @@ function AppointmentForm1() {
     }
   };
 
-
   // Fetch Initial Data
   const getTimes = async () => {
     let res = await GetTime();
@@ -49,7 +46,6 @@ function AppointmentForm1() {
       messageApi.error("Times not found");
     }
   };
-
 
   const getDatas = async () => {
     let res = await GetAppointment();
@@ -72,21 +68,15 @@ function AppointmentForm1() {
     getDatas();
   }, []);
 
-  useEffect(() => {
-    console.log(departments);
-    console.log(rooms);
-  }, [departments, rooms]);
-
   const handleDepartmentChange = (value: React.SetStateAction<null>) => {
     setSelectedDept(value);
-    // Reset room selection when department changes
     form.setFieldValue('RoomID', undefined);
   };
-  // กำหนดวันไม่ให้เลือกวันในอดีต
+
   const disabledDate = (date: dayjs.Dayjs) => {
-    // ป้องกันไม่ให้เลือกวันที่ในอดีต
-    return date && date.isBefore(dayjs(), 'day'); // ใช้ isBefore แทน
+    return date && date.isBefore(dayjs(), 'day');
   };
+
   const handleTimeChange = (value: any) => {
     form.setFieldValue('TimeID', value);
   };
@@ -94,7 +84,6 @@ function AppointmentForm1() {
   const handleRoomChange = (value: any) => {
     form.setFieldValue('RoomID', value);
   };
-
 
   const onFinish = async (values: AppointmentInterface) => {
     let res = await CreateAppointment(values);
@@ -115,7 +104,14 @@ function AppointmentForm1() {
     }
   };
 
-  // ข้อมูลสำหรับตาราง
+  // Logout function
+  const handleLogout = () => {
+    // Clear any authentication data (e.g., localStorage)
+    localStorage.removeItem('NationalID');
+    // Redirect to login page (assuming login page is at '/login')
+    window.location.replace('/');
+  };
+
   const columns: ColumnsType<AppointmentInterface> = [
     {
       title: 'ID',
@@ -123,29 +119,27 @@ function AppointmentForm1() {
       key: 'id',
     },
     {
-      title: "DepartmentID",
+      title: "แผนก",
       key: "DepartmentID",
       render: (record) => <>{record?.department?.department}</>,
     },
     {
-      title: "RoomID",
+      title: "ห้องตรวจ",
       key: "RoomID",
       render: (record) => <>{record?.room?.room}</>,
     },
-
-
     {
-      title: "Date",
+      title: "วันที่",
       key: "date",
       render: (record) => <>{dayjs(record.date).format("DD/MM/YYYY")}</>,
     },
     {
-      title: "TimeID",
+      title: "เวลา",
       key: "TimeID",
       render: (record) => <>{record?.time?.time}</>,
     },
     {
-      title: "Reason",
+      title: "อาการเบื้องต้น",
       dataIndex: "illness",
       key: "illness",
     },
@@ -178,28 +172,31 @@ function AppointmentForm1() {
           bordered={false}
           className="shadow-lg"
         >
+
+
           <Row gutter={24}>
-            <Col xs={24} lg={12}>
-              <Form
-                form={form}
-                layout="vertical"
-                onFinish={onFinish}
-                autoComplete="off"
-                size="large"
-                className="p-4"
-              >
+  <Col xs={24} lg={8}> {/* Reduce form column width */}
+    <Form
+      form={form}
+      layout="vertical"
+      requiredMark="optional"
+      onFinish={onFinish}
+      autoComplete="off"
+      size="large"
+      className="p-4"
+    >
+
                 <Row gutter={16}>
                   <Col xs={24} sm={12}>
                     <Form.Item
                       name="DepartmentID"
-                      label={<span className="text-gray-700 font-medium">Department</span>}
+                      label={<span className="text-gray-700 font-medium">แผนก</span>}
                       rules={[{ required: true, message: 'Please select a department' }]}
                     >
                       <Select
                         placeholder="Select department"
                         onChange={handleDepartmentChange}
                         loading={departments.length === 0}
-          
                       >
                         {departments.map((item) => (
                           <Select.Option value={item.ID} key={item.ID}>
@@ -212,7 +209,7 @@ function AppointmentForm1() {
                   <Col xs={24} sm={12}>
                     <Form.Item
                       name="RoomID"
-                      label={<span className="text-gray-700 font-medium">Examination Room</span>}
+                      label={<span className="text-gray-700 font-medium">ห้องตรวจ</span>}
                       rules={[{ required: true, message: 'Please select a room' }]}
                     >
                       <Select
@@ -237,7 +234,7 @@ function AppointmentForm1() {
                   <Col xs={24} sm={12}>
                     <Form.Item
                       name="date"
-                      label={<span className="text-gray-700 font-medium">Date</span>}
+                      label={<span className="text-gray-700 font-medium">วันที่</span>}
                       rules={[{ required: true, message: 'Please select a date' }]}
                     >
                       <DatePicker
@@ -251,7 +248,7 @@ function AppointmentForm1() {
                   <Col xs={24} sm={12}>
                     <Form.Item
                       name="TimeID"
-                      label={<span className="text-gray-700 font-medium">Time</span>}
+                      label={<span className="text-gray-700 font-medium">เวลา</span>}
                       rules={[{ required: true, message: 'Please select a time' }]}
                     >
                       <Select
@@ -271,7 +268,7 @@ function AppointmentForm1() {
 
                 <Form.Item
                   name="illness"
-                  label={<span className="text-gray-700 font-medium">Initial Symptoms</span>}
+                  label={<span className="text-gray-700 font-medium">อาการเบื้องต้น</span>}
                   rules={[{ required: true, message: 'Please describe your symptoms' }]}
                 >
                   <TextArea
@@ -281,20 +278,35 @@ function AppointmentForm1() {
                 </Form.Item>
 
                 <Form.Item>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    block
-                    size="large"
-                    className="h-12 text-base font-medium shadow-md hover:shadow-lg transition-all"
-                  >
-                    Confirm Appointment
-                  </Button>
-                </Form.Item>
+  <Button
+    type="primary"
+    htmlType="submit"
+    block
+    size="large"
+    className="h-12 text-base font-medium shadow-md hover:shadow-lg transition-all"
+  >
+    Confirm Appointment
+  </Button>
+</Form.Item>
+
+<Form.Item>
+  <Button
+    type="primary"
+    danger
+    onClick={handleLogout}
+    block
+    size="large"
+    className="h-12 text-base font-medium bg-red-900 text-white shadow-md hover:bg-red-900 hover:shadow-lg transition-all"
+  
+  >
+    Logout
+  </Button>
+</Form.Item>
+
               </Form>
             </Col>
 
-            <Col xs={24} lg={12}>
+            <Col xs={24} lg={16}> {/* Increase table column width */}
               <Card
                 title={<div className="flex items-center text-white font-semibold">
                   Appointment Table
@@ -319,6 +331,5 @@ function AppointmentForm1() {
     </ConfigProvider>
   );
 };
-
 
 export default AppointmentForm1;

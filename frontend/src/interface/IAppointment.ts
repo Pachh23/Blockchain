@@ -5,6 +5,5 @@ export interface AppointmentInterface {
     TimeID?: number;
     Illness?: string;
     DepartmentID?: number;
-    PatientID?: number;
     RoomID?: number;
 }
