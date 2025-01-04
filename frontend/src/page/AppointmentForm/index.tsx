@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Select, DatePicker, TimePicker, Input, Button, Card, Row, Col, Table, message } from 'antd';
-import moment from 'moment';
+import { Form, Select, DatePicker, Input, Button, Card, Row, Col, Table, message } from 'antd';
 import { RoomInterface } from '../../interface/IRoom';
 import { TimeInterface } from '../../interface/ITime';
+import { AppointmentInterface } from '../../interface/IAppointment';
 import { DepartmentInterface } from '../../interface/IDepartment';
-import { GetDepartment, GetRoom, GetTime } from '../../services/https';
+import { CreateAppointment, GetDepartment, GetRoom, GetTime } from '../../services/https';
 import dayjs from 'dayjs'; // ใช้ dayjs แทน moment
-
-const { Option } = Select;
 const { TextArea } = Input;
 
 const AppointmentForm1: React.FC = () => {
@@ -72,6 +70,25 @@ const AppointmentForm1: React.FC = () => {
     return date && date.isBefore(dayjs(), 'day'); // ใช้ isBefore แทน
   };
 
+  const onFinish = async (values: AppointmentInterface) => {
+    let res = await CreateAppointment(values);
+
+    if (res.status == 201) {
+      messageApi.open({
+        type: "success",
+        content: res.data.message,
+      });
+      setTimeout(function () {
+        window.location.reload(); 
+      }, 2000);
+    } else {
+      messageApi.open({
+        type: "error",
+        content: res.data.error,
+      });
+    }
+  };
+
   // ข้อมูลสำหรับตาราง
   const columns = [
     {
@@ -111,13 +128,13 @@ const AppointmentForm1: React.FC = () => {
             <Form
               form={form}
               layout="vertical"
-              //onFinish={onFinish}
+              onFinish={onFinish}
               autoComplete="off"
             >
               <Row gutter={16}>
               <Col xs={24} sm={12}>
           <Form.Item
-            name="department_id"
+            name="DepartmentID"
             label="Department"
             rules={[{ required: true, message: 'Please select a department' }]}
           >
@@ -194,7 +211,7 @@ const AppointmentForm1: React.FC = () => {
               </Row>
 
               <Form.Item
-                name="symptoms"
+                name="illness"
                 label="Initial Symptoms"
                 rules={[{ required: true, message: 'Please describe your symptoms' }]}
               >

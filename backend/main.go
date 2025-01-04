@@ -20,6 +20,7 @@ func main() {
 	r.Use(CORSMiddleware())
 	// Auth Route
 	r.POST("/signin", controller.SignIn)
+	r.POST("/create", controller.CreateAppointment)
 
 	router := r.Group("/")
 	{

@@ -62,14 +62,14 @@ func SetupDatabase() {
 			TimeID:       1,
 			Illness:      "ปวดหัว",
 			DepartmentID: 1,
-			PatientID:    1,
+			//PatientID:    1,
 		},
 		{
 			Date:         time.Now(),
 			TimeID:       1,
 			Illness:      "ปวดตัว",
 			DepartmentID: 2,
-			PatientID:    2,
+			//PatientID:    2,
 		},
 	}
 

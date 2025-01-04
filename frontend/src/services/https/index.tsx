@@ -1,3 +1,4 @@
+import { AppointmentInterface } from "../../interface/IAppointment";
 import { SignInInterface } from "../../interface/SignIn";
 import axios from "axios";
 const apiUrl = "http://localhost:8000";
@@ -36,10 +37,18 @@ async function GetTime() {
     .then((res) => res)
     .catch((e) => e.response);
 }
+
+async function CreateAppointment(data: AppointmentInterface) {
+  return await axios
+    .post(`${apiUrl}/create`, data, requestOptions)
+    .then((res) => res)
+    .catch((e) => e.response);
+}
 export {
   SignIn,
   GetDepartment,
   GetRoom,
   GetTime,
+  CreateAppointment
   
 };
