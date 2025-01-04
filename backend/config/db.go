@@ -31,6 +31,7 @@ func SetupDatabase() {
 		&entity.Room{}, // เพิ่มการ migrate ตาราง Like
 		&entity.Times{},
 		&entity.Appointment{},
+		&entity.Block{}, // เพิ่มการ migrate ตาราง Block
 	)
 
 	// ผู้ป่วย

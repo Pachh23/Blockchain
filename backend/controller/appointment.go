@@ -33,20 +33,24 @@ func CreateAppointment(c *gin.Context) {
 	appointmentData, _ := json.Marshal(appointment)
 
 	// Create a new block using the appointment data
-	newBlock := blockchainInstance.CreateBlock(string(appointmentData)) // เพิ่มบล็อกใหม่เข้าไปใน Blockchain
+	newBlock, err := blockchainInstance.CreateBlock(string(appointmentData)) // รับค่าคืนมาทั้ง Block และ Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create block"})
+		return
+	}
 
 	// ส่งข้อมูลตอบกลับรวมทั้งข้อมูล appointment และ block
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Appointment created successfully",
 		"data":    appointment,
-		"block":   newBlock, // ส่งข้อมูล block ที่ถูกสร้าง
+		"block":   newBlock,
 	})
 }
 
+func GetAllBlocks(c *gin.Context) {
+	c.JSON(http.StatusOK, blockchainInstance.Chain)
+}
 
-	func GetAllBlocks(c *gin.Context) {
-		c.JSON(http.StatusOK, blockchainInstance.Chain)
-	}
 /*
 func GetAllBlocks(c *gin.Context) {
 	// ดึงข้อมูลจาก Blockchain

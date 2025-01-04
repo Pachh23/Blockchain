@@ -4,4 +4,6 @@ export interface BlockInterface {
   previousHash: string;
   data: string;
   hash: string;
+  nonce: number;       // เพิ่มฟิลด์ nonce สำหรับ Proof of Work
+  difficulty: number;  // เพิ่มฟิลด์ difficulty สำหรับการคำนวณ Proof of Work
 }
