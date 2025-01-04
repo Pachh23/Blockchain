@@ -8,7 +8,6 @@ import { CreateAppointment, GetAppointment, GetDepartment, GetRoom, GetTime } fr
 import dayjs from 'dayjs'; // ใช้ dayjs แทน moment
 import { ColumnsType } from 'antd/es/table';
 const { TextArea } = Input;
-//import { CalendarOutlined, ClockCircleOutlined, MedicineBoxOutlined, HomeOutlined } from 'lucide-react';
 
 function AppointmentForm1() {
   const [form] = Form.useForm();
