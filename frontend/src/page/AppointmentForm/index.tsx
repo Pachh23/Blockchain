@@ -1,54 +1,56 @@
-import React, { useState } from 'react';
-import { Form, Select, DatePicker, TimePicker, Input, Button, Card, Row, Col, Table } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, Select, DatePicker, TimePicker, Input, Button, Card, Row, Col, Table, message } from 'antd';
 import moment from 'moment';
+import { RoomInterface } from '../../interface/IRoom';
+import { DepartmentInterface } from '../../interface/IDepartment';
+import { GetDepartment, GetRoom } from '../../services/https';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-interface DepartmentRoom {
-  [key: string]: string[];
-}
-
-const AppointmentForm: React.FC = () => {
+const AppointmentForm1: React.FC = () => {
   const [form] = Form.useForm();
-  const [selectedDept, setSelectedDept] = useState<string>('');
+  const [messageApi, contextHolder] = message.useMessage();
+  const [selectedDept, setSelectedDept] = useState(null);
+  const [rooms, setRooms] = useState<RoomInterface[]>([]);
+  const [departments, setDepartments] = useState<DepartmentInterface[]>([]);
 
-  // ข้อมูลสำหรับ Department และ Room
-  const departments = [
-    { id: 'D1', name: 'General Medicine' },
-    { id: 'D2', name: 'General Surgery' },
-    { id: 'D3', name: 'Obstetrics & Gynecology' },
-    { id: 'D4', name: 'Pediatrics' },
-    { id: 'D5', name: 'ENT' },
-    { id: 'D6', name: 'Eye Clinic' },
-    { id: 'D7', name: 'Orthopedics' },
-    { id: 'D8', name: 'Dental Clinic' }
-  ];
-
-  const rooms: DepartmentRoom = {
-    'D1': ['201', '202', '203'],
-    'D2': ['301', '302', '303'],
-    'D3': ['401', '402', '403'],
-    'D4': ['501', '502', '503'],
-    'D5': ['601', '602'],
-    'D6': ['701', '702'],
-    'D7': ['801', '802'],
-    'D8': ['901', '902']
+  
+  const getDepartments = async () => {
+    let res = await GetDepartment();
+    if (res.status === 200) {
+      setDepartments(res.data);
+    } else {
+      messageApi.error("Departments not found");
+    }
   };
+  
+    // Fetch Initial Data
+    const getRooms = async () => {
+      let res = await GetRoom();
+      if (res.status === 200) {
+        setRooms(res.data);
+      } else {
+        messageApi.error("Rooms not found");
+      }
+    };
 
-  const onFinish = (values: any) => {
-    console.log('Form values:', {
-      ...values,
-      date: values.date?.format('YYYY-MM-DD'),
-      time: values.time?.format('HH:mm')
-    });
-  };
 
-  const handleDepartmentChange = (value: string) => {
-    setSelectedDept(value);
-    form.setFieldsValue({ room: undefined });
-  };
+    useEffect(() => {
+      getDepartments();
+      getRooms();
+    }, []);
 
+    useEffect(() => {
+      console.log(departments);
+      console.log(rooms);
+    }, [departments, rooms]);
+    
+    const handleDepartmentChange = (value: React.SetStateAction<null>) => {
+      setSelectedDept(value);
+      // Reset room selection when department changes
+      form.setFieldValue('RoomID', undefined);
+    };
   // กำหนดวันไม่ให้เลือกวันในอดีต
   const disabledDate = (current: moment.Moment) => {
     return current && current < moment().startOf('day');
@@ -83,26 +85,9 @@ const AppointmentForm: React.FC = () => {
     },
   ];
 
-  // ข้อมูลสำหรับแสดงในตาราง
-  const data = [
-    {
-      patient_id: 'P001',
-      doctor_id: 'D001',
-      date: '2025-01-01',
-      time: '10:00',
-      reason: 'Routine Checkup',
-    },
-    {
-      patient_id: 'P002',
-      doctor_id: 'D002',
-      date: '2025-01-02',
-      time: '11:00',
-      reason: 'Dental Consultation',
-    },
-  ];
-
   return (
     <div style={{ padding: '24px' }}>
+      {contextHolder}
       <Card title="Medical Appointment Form" bordered={false}>
         <Row gutter={16}>
           <Col xs={24} sm={12}>
@@ -110,45 +95,52 @@ const AppointmentForm: React.FC = () => {
             <Form
               form={form}
               layout="vertical"
-              onFinish={onFinish}
+              //onFinish={onFinish}
               autoComplete="off"
             >
               <Row gutter={16}>
-                <Col xs={24} sm={12}>
-                  <Form.Item
-                    name="department"
-                    label="Department"
-                    rules={[{ required: true, message: 'Please select a department' }]}
-                  >
-                    <Select
-                      placeholder="Select department"
-                      onChange={handleDepartmentChange}
-                    >
-                      {departments.map(dept => (
-                        <Option key={dept.id} value={dept.id}>{dept.name}</Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </Col>
-
-                <Col xs={24} sm={12}>
-                  <Form.Item
-                    name="room"
-                    label="Examination Room"
-                    rules={[{ required: true, message: 'Please select a room' }]}
-                  >
-                    <Select
-                      placeholder="Select examination room"
-                      disabled={!selectedDept}
-                    >
-                      {selectedDept && rooms[selectedDept]?.map(room => (
-                        <Option key={room} value={room}>Room {room}</Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </Col>
+              <Col xs={24} sm={12}>
+          <Form.Item
+            name="department_id"
+            label="Department"
+            rules={[{ required: true, message: 'Please select a department' }]}
+          >
+            <Select
+              placeholder="Select department"
+              onChange={handleDepartmentChange}
+              loading={departments.length === 0}
+            >
+              {departments.map((item) => (
+                <Select.Option value={item.ID} key={item.ID}>
+                  {item.department}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Col>
+              <Col xs={24} sm={12}>
+          <Form.Item
+            name="RoomID"
+            label="Examination Room"
+            rules={[{ required: true, message: 'Please select a room' }]}
+          >
+            <Select
+              placeholder="Select examination room"
+              disabled={!selectedDept}
+              loading={rooms.length === 0}
+            >
+              {rooms
+                .filter((room) => room.department_id === selectedDept)
+                .map((room) => (
+                  <Select.Option key={room.ID} value={room.ID}>
+                    {room.name}
+                  </Select.Option>
+                ))}
+            </Select>
+          </Form.Item>
+        </Col>
+                
               </Row>
-
               <Row gutter={16}>
                 <Col xs={24} sm={12}>
                   <Form.Item
@@ -204,7 +196,7 @@ const AppointmentForm: React.FC = () => {
             <Card title="Appointment Table" bordered={true}>
               <Table
                 columns={columns}
-                dataSource={data}
+                //dataSource={data}
                 rowKey="patient_id"
               />
             </Card>
@@ -215,4 +207,4 @@ const AppointmentForm: React.FC = () => {
   );
 };
 
-export default AppointmentForm;
+export default AppointmentForm1;

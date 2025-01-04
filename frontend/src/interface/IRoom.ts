@@ -1,4 +1,5 @@
 export interface RoomInterface {
     ID?: number;
-    DepartmentID?: number;
+    department_id?: number;
+    name?: string;
 }

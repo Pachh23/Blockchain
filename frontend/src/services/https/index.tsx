@@ -15,7 +15,23 @@ async function SignIn(data: SignInInterface) {
     .then((res) => res)
     .catch((e) => e.response);
 }
+
+async function GetDepartment() {
+  return await axios
+    .get(`${apiUrl}/departments`,requestOptions)
+    .then((res) => res)
+    .catch((e) => e.response);
+}
+
+async function GetRoom() {
+  return await axios
+    .get(`${apiUrl}/rooms`,requestOptions)
+    .then((res) => res)
+    .catch((e) => e.response);
+}
 export {
   SignIn,
+  GetDepartment,
+  GetRoom,
   
 };

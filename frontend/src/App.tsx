@@ -38,14 +38,13 @@ export default App
 */import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './page/login'; // import LoginPage component
-import AppointmentForm from './page/AppointmentForm';
-
+import AppointmentForm1 from './page/AppointmentForm';
 const App: React.FC = () => {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="/appointmentForm" element={<AppointmentForm />} />
+        <Route path="/appointmentForm1" element={<AppointmentForm1 />} />
       </Routes>
     </Router>
   );

@@ -8,5 +8,5 @@ type Room struct {
 	DepartmentID uint   `json:"department_id"` // Foreign Key สำหรับเชื่อมโยงกับแผนก
 
 	// การเชื่อมโยงไปยัง Department
-	Department Department `gorm:"foreignKey:DepartmentID" json:"department"`
+	Department Departments `gorm:"foreignKey:DepartmentID" json:"department"`
 }

@@ -26,6 +26,9 @@ func main() {
 		router.Use(middlewares.Authorizes())
 
 	}
+	r.GET("/departments", controller.GetAllDepartments)
+	r.GET("/rooms", controller.GetAllRooms)
+
 	r.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "API RUNNING... PORT: %s", PORT)
 	})

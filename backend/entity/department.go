@@ -2,9 +2,9 @@ package entity
 
 import "gorm.io/gorm"
 
-type Department struct {
+type Departments struct {
 	gorm.Model
-	Name        string `json:"name"`
+	Department  string `json:"department"`
 	Description string `json:"description"`
 	HeadOfDept  string `json:"head_of_department"`
 }

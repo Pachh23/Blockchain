@@ -17,7 +17,7 @@ function SignInPages() {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("id", res.data.id);
       setTimeout(() => {
-        location.href = "/appointmentForm";
+        location.href = "/appointmentForm1";
       }, 2000);
     } else {
       messageApi.error(res.data.error);
