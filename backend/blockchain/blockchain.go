@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	`blockchain.com/bc-67/config`
+	"blockchain.com/bc-67/config"
 	"blockchain.com/bc-67/entity"
 	"gorm.io/gorm"
 )
