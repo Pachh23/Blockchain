@@ -33,43 +33,23 @@ function App() {
 }
 
 export default App
-*/
-import React, { useEffect, useState } from "react";
-import { Layout, message } from "antd";
-import axios from "axios";
-import AppointmentForm from "./components/AppointmentForm";
-import AppointmentTable from "./components/AppointmentTable";
-import { Appointment } from "./types/Appointment";
 
-const { Header, Content, Footer } = Layout;
 
+*/import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LoginPage from './page/login'; // import LoginPage component
+import AppointmentForm1 from './page/AppointmentForm';
+import BlockchainDataPage from './page/BlockchainDataPage';
 const App: React.FC = () => {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-
-  const fetchAppointments = async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/blocks");
-      setAppointments(response.data);
-    } catch (error) {
-      message.error("Failed to fetch appointments");
-    }
-  };
-
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
-
   return (
-    <Layout>
-      <Header style={{ color: "white", textAlign: "center", fontSize: "24px" }}>
-        Patient Appointment System
-      </Header>
-      <Content style={{ padding: "20px" }}>
-        <AppointmentForm onAppointmentAdded={fetchAppointments} />
-        <AppointmentTable appointments={appointments} />
-      </Content>
-      <Footer style={{ textAlign: "center" }}>©2024 Patient Appointment Blockchain</Footer>
-    </Layout>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/appointmentForm1" element={<AppointmentForm1 />} />
+        <Route path="/BlockchainDataPage" element={<BlockchainDataPage />} />
+
+      </Routes>
+    </Router>
   );
 };
 
